@@ -58,6 +58,27 @@ Create a new memo.
 }
 ```
 
+### PUT /memo/{id}
+Update an existing memo by its ID.
+
+**Request Body:**
+```json
+{
+  "content": "Updated memo content"
+}
+```
+
+**Response:**
+```json
+{
+  "id": 1,
+  "content": "Updated memo content",
+  "created_at": "2025-06-20T16:59:24.111248"
+}
+```
+
+Returns 404 if memo with the specified ID doesn't exist.
+
 ### DELETE /memo/{id}
 Delete a memo by its ID.
 
@@ -130,6 +151,11 @@ curl http://localhost:8000/memo/1
 curl -X POST http://localhost:8000/memo \
   -H "Content-Type: application/json" \
   -d '{"content": "Remember to buy groceries"}'
+
+# Update a memo by ID
+curl -X PUT http://localhost:8000/memo/1 \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Updated memo content"}'
 
 # Delete a memo by ID
 curl -X DELETE http://localhost:8000/memo/1

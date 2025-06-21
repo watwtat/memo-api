@@ -34,6 +34,19 @@ def get_memo(memo_id):
     memo = Memo.query.get_or_404(memo_id)
     return jsonify(memo.to_dict())
 
+@app.route('/memo/<int:memo_id>', methods=['PUT'])
+def update_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    data = request.get_json()
+    
+    if not data or 'content' not in data:
+        return jsonify({'error': 'Missing content field'}), 400
+    
+    memo.content = data['content']
+    db.session.commit()
+    
+    return jsonify(memo.to_dict())
+
 @app.route('/memo', methods=['POST'])
 def create_memo():
     data = request.get_json()

@@ -142,6 +142,49 @@ class MemoAPITestCase(unittest.TestCase):
         response = self.app.get('/memo/999')
         self.assertEqual(response.status_code, 404)
 
+    def test_update_memo(self):
+        memo_data = {'content': 'Original memo content'}
+        create_response = self.app.post('/memo', 
+                                       data=json.dumps(memo_data),
+                                       content_type='application/json')
+        created_memo = json.loads(create_response.data)
+        memo_id = created_memo['id']
+        
+        updated_data = {'content': 'Updated memo content'}
+        update_response = self.app.put(f'/memo/{memo_id}',
+                                      data=json.dumps(updated_data),
+                                      content_type='application/json')
+        self.assertEqual(update_response.status_code, 200)
+        
+        updated_memo = json.loads(update_response.data)
+        self.assertEqual(updated_memo['id'], memo_id)
+        self.assertEqual(updated_memo['content'], 'Updated memo content')
+        self.assertEqual(updated_memo['created_at'], created_memo['created_at'])
+
+    def test_update_nonexistent_memo(self):
+        updated_data = {'content': 'Updated content'}
+        response = self.app.put('/memo/999',
+                               data=json.dumps(updated_data),
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_memo_missing_content(self):
+        memo_data = {'content': 'Original memo content'}
+        create_response = self.app.post('/memo', 
+                                       data=json.dumps(memo_data),
+                                       content_type='application/json')
+        created_memo = json.loads(create_response.data)
+        memo_id = created_memo['id']
+        
+        invalid_data = {'invalid_field': 'value'}
+        response = self.app.put(f'/memo/{memo_id}',
+                               data=json.dumps(invalid_data),
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 400)
+        
+        error_data = json.loads(response.data)
+        self.assertEqual(error_data['error'], 'Missing content field')
+
 
 if __name__ == '__main__':
     unittest.main()
