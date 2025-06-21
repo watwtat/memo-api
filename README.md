@@ -73,15 +73,23 @@ The API will be available at `http://localhost:5000`
 
 ## Running with Docker
 
-### Build and run
+### Build and run with persistent storage
 ```bash
 docker build -t memo-api .
-docker run -p 8000:8000 memo-api
+docker run -p 8000:8000 -v memo-data:/app/data memo-api
 ```
 
 The API will be available at `http://localhost:8000`
 
-**Note:** The database file will be created inside the Docker container and data will persist only while the container exists.
+**Note:** Using the `-v memo-data:/app/data` volume mount ensures that your memo data persists even when the container is deleted or restarted. The database file will be stored in the named Docker volume `memo-data`.
+
+### Alternative: Using a host directory
+```bash
+mkdir -p ./data
+docker run -p 8000:8000 -v $(pwd)/data:/app/data memo-api
+```
+
+This mounts a local `./data` directory to store the database file on your host system.
 
 ## Example Usage
 
