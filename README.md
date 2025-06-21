@@ -25,6 +25,20 @@ Retrieve all memos.
 ]
 ```
 
+### GET /memo/{id}
+Retrieve a specific memo by its ID.
+
+**Response:**
+```json
+{
+  "id": 1,
+  "content": "Sample memo content",
+  "created_at": "2025-06-20T16:59:24.111248"
+}
+```
+
+Returns 404 if memo with the specified ID doesn't exist.
+
 ### POST /memo
 Create a new memo.
 
@@ -108,6 +122,9 @@ This mounts a local `./data` directory to store the database file on your host s
 ```bash
 # Get all memos
 curl http://localhost:8000/memo
+
+# Get a specific memo by ID
+curl http://localhost:8000/memo/1
 
 # Create a new memo
 curl -X POST http://localhost:8000/memo \

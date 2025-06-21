@@ -122,6 +122,26 @@ class MemoAPITestCase(unittest.TestCase):
         self.assertIn('Third memo', remaining_contents)
         self.assertNotIn('Second memo', remaining_contents)
 
+    def test_get_memo_by_id(self):
+        memo_data = {'content': 'Test memo for GET by ID'}
+        create_response = self.app.post('/memo', 
+                                       data=json.dumps(memo_data),
+                                       content_type='application/json')
+        created_memo = json.loads(create_response.data)
+        memo_id = created_memo['id']
+        
+        get_response = self.app.get(f'/memo/{memo_id}')
+        self.assertEqual(get_response.status_code, 200)
+        
+        memo = json.loads(get_response.data)
+        self.assertEqual(memo['id'], memo_id)
+        self.assertEqual(memo['content'], 'Test memo for GET by ID')
+        self.assertIn('created_at', memo)
+
+    def test_get_nonexistent_memo_by_id(self):
+        response = self.app.get('/memo/999')
+        self.assertEqual(response.status_code, 404)
+
 
 if __name__ == '__main__':
     unittest.main()

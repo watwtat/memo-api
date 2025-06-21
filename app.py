@@ -29,6 +29,11 @@ def get_memos():
     memos = Memo.query.all()
     return jsonify([memo.to_dict() for memo in memos])
 
+@app.route('/memo/<int:memo_id>', methods=['GET'])
+def get_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    return jsonify(memo.to_dict())
+
 @app.route('/memo', methods=['POST'])
 def create_memo():
     data = request.get_json()
