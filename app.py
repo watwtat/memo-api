@@ -42,6 +42,14 @@ def create_memo():
     
     return jsonify(new_memo.to_dict()), 201
 
+@app.route('/memo/<int:memo_id>', methods=['DELETE'])
+def delete_memo(memo_id):
+    memo = Memo.query.get_or_404(memo_id)
+    db.session.delete(memo)
+    db.session.commit()
+    
+    return jsonify({'message': f'Memo {memo_id} deleted successfully'}), 200
+
 with app.app_context():
     db.create_all()
 

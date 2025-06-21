@@ -44,6 +44,18 @@ Create a new memo.
 }
 ```
 
+### DELETE /memo/{id}
+Delete a memo by its ID.
+
+**Response:**
+```json
+{
+  "message": "Memo 1 deleted successfully"
+}
+```
+
+Returns 404 if memo with the specified ID doesn't exist.
+
 ## Running Locally
 
 ### Prerequisites
@@ -101,4 +113,7 @@ curl http://localhost:8000/memo
 curl -X POST http://localhost:8000/memo \
   -H "Content-Type: application/json" \
   -d '{"content": "Remember to buy groceries"}'
+
+# Delete a memo by ID
+curl -X DELETE http://localhost:8000/memo/1
 ```
