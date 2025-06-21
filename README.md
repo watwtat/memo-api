@@ -6,7 +6,8 @@ A simple Flask-based REST API for managing memos.
 
 - Create new memos with content
 - Retrieve all memos
-- In-memory storage (data persists only during runtime)
+- Persistent SQLite database storage
+- Automatic database initialization
 
 ## API Endpoints
 
@@ -48,6 +49,7 @@ Create a new memo.
 ### Prerequisites
 - Python 3.12+
 - pip
+- SQLite (included with Python)
 
 ### Setup
 1. Clone the repository
@@ -67,6 +69,8 @@ Create a new memo.
 
 The API will be available at `http://localhost:5000`
 
+**Note:** The SQLite database file (`memos.db`) will be automatically created in the project directory on first run.
+
 ## Running with Docker
 
 ### Build and run
@@ -76,6 +80,8 @@ docker run -p 8000:8000 memo-api
 ```
 
 The API will be available at `http://localhost:8000`
+
+**Note:** The database file will be created inside the Docker container and data will persist only while the container exists.
 
 ## Example Usage
 

@@ -1,13 +1,21 @@
 import unittest
 import json
-from app import app, memos
+from app import app, db, Memo
 
 
 class MemoAPITestCase(unittest.TestCase):
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
-        memos.clear()
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        
+        with app.app_context():
+            db.create_all()
+
+    def tearDown(self):
+        with app.app_context():
+            db.session.remove()
+            db.drop_all()
 
     def test_get_empty_memos(self):
         response = self.app.get('/memo')
