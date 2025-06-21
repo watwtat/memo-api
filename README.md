@@ -6,6 +6,10 @@ A simple Flask-based REST API for managing memos.
 
 - Create new memos with content
 - Retrieve all memos
+- Update existing memos
+- Delete memos
+- Web UI with HTMX for interactive memo management
+- REST API for programmatic access
 - Persistent SQLite database storage
 - Automatic database initialization
 
@@ -116,6 +120,8 @@ Returns 404 if memo with the specified ID doesn't exist.
 
 The API will be available at `http://localhost:5000`
 
+**Web UI:** Visit `http://localhost:5000` in your browser for the interactive memo management interface.
+
 **Note:** The SQLite database file (`memos.db`) will be automatically created in the project directory on first run.
 
 ## Running with Docker
@@ -128,6 +134,8 @@ docker run -p 8000:8000 -v memo-data:/app/data memo-api
 
 The API will be available at `http://localhost:8000`
 
+**Web UI:** Visit `http://localhost:8000` in your browser for the interactive memo management interface.
+
 **Note:** Using the `-v memo-data:/app/data` volume mount ensures that your memo data persists even when the container is deleted or restarted. The database file will be stored in the named Docker volume `memo-data`.
 
 ### Alternative: Using a host directory
@@ -138,7 +146,17 @@ docker run -p 8000:8000 -v $(pwd)/data:/app/data memo-api
 
 This mounts a local `./data` directory to store the database file on your host system.
 
-## Example Usage
+## Web Interface
+
+Visit the root URL (`http://localhost:5000` or `http://localhost:8000` for Docker) to access the interactive web interface built with HTMX. The interface allows you to:
+
+- View all memos in a clean, organized list
+- Add new memos using a simple form
+- Edit existing memos inline
+- Delete memos with confirmation
+- Real-time updates without page refreshes
+
+## API Usage (for developers)
 
 ```bash
 # Get all memos

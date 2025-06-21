@@ -1,0 +1,9 @@
+{% if memos %}
+    {% for memo in memos %}
+        {% include 'memo_item.html' %}
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        No memos yet. Add your first memo above!
+    </div>
+{% endif %}

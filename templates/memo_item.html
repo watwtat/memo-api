@@ -1,0 +1,36 @@
+<div class="memo-item" data-memo-id="{{ memo.id }}">
+    <div class="memo-display">
+        <div class="memo-content">{{ memo.content }}</div>
+        <div class="memo-meta">
+            ID: {{ memo.id }} | Created: {{ memo.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+        </div>
+        <div class="memo-actions">
+            <button class="btn btn-secondary" onclick="toggleEdit('{{ memo.id }}')">Edit</button>
+            <button class="btn btn-danger" 
+                    hx-delete="/memo/{{ memo.id }}" 
+                    hx-target="closest .memo-item" 
+                    hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to delete this memo?"
+                    onclick="this.classList.add('loading')">
+                Delete
+            </button>
+        </div>
+    </div>
+    
+    <div class="edit-form">
+        <form hx-put="/memo/{{ memo.id }}" 
+              hx-target="closest .memo-item" 
+              hx-swap="outerHTML">
+            <div class="form-group">
+                <label for="edit-content-{{ memo.id }}">Edit memo:</label>
+                <textarea name="content" 
+                         id="edit-content-{{ memo.id }}" 
+                         required>{{ memo.content }}</textarea>
+            </div>
+            <div class="memo-actions">
+                <button type="submit" class="btn">Save</button>
+                <button type="button" class="btn btn-secondary" onclick="cancelEdit('{{ memo.id }}')">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>

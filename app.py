@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import os
@@ -24,9 +24,18 @@ class Memo(db.Model):
             'created_at': self.created_at.isoformat()
         }
 
+@app.route('/')
+def index():
+    return render_template('index.html')
+
 @app.route('/memo', methods=['GET'])
 def get_memos():
-    memos = Memo.query.all()
+    memos = Memo.query.order_by(Memo.created_at.desc()).limit(100).all()
+    
+    # Check if request is from HTMX
+    if request.headers.get('HX-Request'):
+        return render_template('memo_list.html', memos=memos)
+    
     return jsonify([memo.to_dict() for memo in memos])
 
 @app.route('/memo/<int:memo_id>', methods=['GET'])
@@ -37,6 +46,19 @@ def get_memo(memo_id):
 @app.route('/memo/<int:memo_id>', methods=['PUT'])
 def update_memo(memo_id):
     memo = Memo.query.get_or_404(memo_id)
+    
+    # Handle form data from HTMX
+    if request.headers.get('HX-Request'):
+        content = request.form.get('content')
+        if not content:
+            return '<div class="error">Missing content field</div>', 400
+        
+        memo.content = content
+        db.session.commit()
+        
+        return render_template('memo_item.html', memo=memo)
+    
+    # Handle JSON data from API
     data = request.get_json()
     
     if not data or 'content' not in data:
@@ -49,6 +71,19 @@ def update_memo(memo_id):
 
 @app.route('/memo', methods=['POST'])
 def create_memo():
+    # Handle form data from HTMX
+    if request.headers.get('HX-Request'):
+        content = request.form.get('content')
+        if not content:
+            return '<div class="error">Missing content field</div>', 400
+        
+        new_memo = Memo(content=content)
+        db.session.add(new_memo)
+        db.session.commit()
+        
+        return render_template('memo_item.html', memo=new_memo)
+    
+    # Handle JSON data from API
     data = request.get_json()
     
     if not data or 'content' not in data:
@@ -66,10 +101,16 @@ def delete_memo(memo_id):
     db.session.delete(memo)
     db.session.commit()
     
+    # Return empty response for HTMX (removes the element)
+    if request.headers.get('HX-Request'):
+        return '', 200
+    
     return jsonify({'message': f'Memo {memo_id} deleted successfully'}), 200
 
 with app.app_context():
     db.create_all()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import sys
+    if 'gunicorn' not in sys.modules:
+        app.run(debug=True)
