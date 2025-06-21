@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: memo-api
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 90 --preload app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATA_DIR
+        value: /opt/render/project/src/data
+    disk:
+      name: memo-data
+      mountPath: /opt/render/project/src/data
+      sizeGB: 1
