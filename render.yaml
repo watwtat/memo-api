@@ -1,7 +1,7 @@
 services:
   - type: web
     name: memo-api
-    env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 90 --preload app:app
     envVars:
